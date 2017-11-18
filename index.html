@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.3/vue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
     <script src="https://unpkg.com/deeplearn"></script>
+    <script src="newsgroups/FileSaver.js"></script>
     <script src="newsgroups/helpers.js"></script>
     <style>
         body {
@@ -27,8 +28,9 @@
     </style>
 </head>
 <body>
-    <button style="position:absolute;top:5px;right:5px;z-index:5;" class="button is-primary" onclick="run()">Run</button>
-    <button style="position:absolute;bottom:5px;right:5px;z-index:5;" class="button is-danger" onclick="reset()">Reset</button>
+    <button style="position:absolute;top:5px;right:5px;z-index:5;width:8em;" class="button is-primary" onclick="run()">Run</button>
+    <button style="position:absolute;top:45px;right:5px;z-index:5;width:8em;" class="button is-info" onclick="download()">Download</button>
+    <button style="position:absolute;bottom:5px;right:5px;z-index:5;width:8em;" class="button is-danger" onclick="reset()">Reset</button>
 
     <div id="editor"></div>
 
@@ -57,6 +59,11 @@
             eval(editor.getValue())
         }
 
+        function download() {
+            var blob = new Blob([editor.getValue()], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "catapult-" + parseInt((new Date()).getTime()/1000) + ".js");
+        }
+
         function start() {
             $('#viewer').hide()
             localStorage.setItem("editor.started", true)
@@ -83,7 +90,7 @@
         } else {
             $.get("newsgroups/template.js", function (template) {
                 editor.setValue(template)
-            })
+            }, "text")
         }
     </script>
 </body>
