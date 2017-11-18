@@ -21,6 +21,7 @@ buildModel = (dataset) => {
 
     // construct the computation graph
     const g = new deeplearn.Graph();
+    const math = new deeplearn.NDArrayMathGPU();
 
     // create placeholders for the inputs
     const inputTensor = g.placeholder('input', [dataset.input_dims]);
@@ -35,12 +36,11 @@ buildModel = (dataset) => {
     const accTensor = g.argmaxEquals(outputTensor, labelTensor)
 
     // set up a new session
-    const math = new deeplearn.NDArrayMathGPU();
     const session = new deeplearn.Session(g, math);
     const optimizer = new deeplearn.SGDOptimizer(0.01); // Replace this with AdamOptimizer and bad things (TM) start to happen...
 
     // every epoch runs train and test and prints the loss/acc to console
-    function run_epoch(epoch) {
+    const run_epoch = (epoch) => {
         math.scope(() => {
             testAcc = () => {
                 const accs = [];
@@ -100,13 +100,13 @@ $.get("/newsgroups/dataset.json", (dataset) => {
     dataset.testY = be.transform(dataset.testY)
 
     // Use deeplearnjs's data providers
-    const trainProvider = new deeplearn.InCPUMemoryShuffledInputProviderBuilder([dataset.trainX, dataset.trainY]).getInputProviders()
-    dataset.trainX = trainProvider[0];
-    dataset.trainY = trainProvider[1];
+    const trainProvider = new deeplearn.InCPUMemoryShuffledInputProviderBuilder([dataset.trainX, dataset.trainY])
+    dataset.trainX = trainProvider.getInputProvider(0)
+    dataset.trainY = trainProvider.getInputProvider(1)
 
     const testProvider = new deeplearn.InCPUMemoryShuffledInputProviderBuilder([dataset.testX, dataset.testY])
-    dataset.testX = testProvider.getInputProviders()[0];
-    dataset.testY = testProvider.getInputProviders()[1];
+    dataset.testX = testProvider.getInputProvider(0)
+    dataset.testY = testProvider.getInputProvider(1)
 
     buildModel(dataset)
 })
