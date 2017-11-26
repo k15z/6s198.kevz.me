@@ -4,8 +4,10 @@
  * which is equivalent to multiclass logistic regression.
  * 
  * You should modify it by adding additional hidden layers, trying different 
- * regularization methods (dropout, weight decay, etc.), and then report your results, 
- * both positive and negative.
+ * regularization methods (dropout, weight decay, etc.). Alternatively, you can load 
+ * GloVe word embeddings with the GloveEmbedding helper class and implement a deep 
+ * averaging network (DAN). You should include the results - both positive and negative - 
+ * for all the models you tried.
  * 
  * If you prefer, you can also complete this assignment offline with your standard 
  * IDE by modifying cloning the below repository and modifying template.js.
@@ -80,7 +82,7 @@ buildModel = (dataset) => {
 
 // download the dataset, the helper classes BagOfWordsEmbedding and BinaryEncoder can
 // be found at: https://6s198.kevz.me/newsgroups/helpers.js
-$.get("/newsgroups/dataset.json", (dataset) => {
+$.get("/data/newsgroups.json", (dataset) => {
     // keep track of the number of test/train samples
     dataset.nb_test = dataset.testY.length
     dataset.nb_train = dataset.trainY.length
